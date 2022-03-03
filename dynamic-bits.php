@@ -36,7 +36,7 @@ add_action( 'wp_enqueue_scripts', function () {
 add_filter( 'generate_rewrite_rules', function ( $wp_rewrite ) {
 
     $wp_rewrite->non_wp_rules = $wp_rewrite->non_wp_rules + [
-        'my-api' => 'wp-content/plugins/'.basename( __DIR__ ).'/api.php',
+        'dynbit-api' => 'wp-content/plugins/'.basename( __DIR__ ).'/api.php',
     ];
 
     return $wp_rewrite;
