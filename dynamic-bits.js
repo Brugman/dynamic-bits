@@ -1,9 +1,12 @@
 (function($) {
+// document.addEventListener('DOMContentLoaded', function () {
+
+    console.log( 'page ready' );
 
     let dynbits = [];
 
-    $('[data-dynbit]').each( function () {
-        let item = $(this).attr('data-dynbit');
+    document.querySelectorAll('[data-dynbit]').forEach( function ( el ) {
+        let item = el.getAttribute('data-dynbit');
         if ( dynbits.indexOf( item ) === -1 ) {
             dynbits.push( item );
         }
@@ -27,9 +30,12 @@
                     continue;
                 }
 
-                $('[data-dynbit="'+task_name+'"]').html( result.data );
+                document.querySelectorAll('[data-dynbit="'+task_name+'"]').forEach( function ( el ) {
+                    el.innerHTML = result.data;
+                });
             }
         }
     });
 
+// });
 })( jQuery );
