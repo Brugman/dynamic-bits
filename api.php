@@ -17,7 +17,7 @@ function block_direct_access()
     {
         return_data([
             'success' => false,
-            'data'    => 'Direct access is not allowed.'
+            'data'    => 'Direct access is not allowed.',
         ]);
     }
 }
@@ -30,7 +30,7 @@ function block_third_party_access()
     {
         return_data([
             'success' => false,
-            'data'    => 'Third party access is not allowed.'
+            'data'    => 'Third party access is not allowed.',
         ]);
     }
 }
@@ -40,14 +40,29 @@ function clean_task_name( $string )
     return preg_replace( '/[^a-z0-9_]+/', '', $string );
 }
 
-function perform_task()
+function perform_tasks()
 {
-    $task_function = 'dynbit_'.clean_task_name( $_GET['task'] ?? '' );
+    $results = [
+        'success' => true,
+        'data'    => 'Success.',
+    ];
 
-    if ( !function_exists( $task_function ) )
-        return dynbit_task_unavailable();
+    $tasks = array_unique( explode( ',', $_GET['tasks'] ?? '' ) );
 
-    return $task_function();
+    foreach ( $tasks as $task )
+    {
+        $task_function = 'dynbit_'.clean_task_name( $task );
+
+        if ( !function_exists( $task_function ) )
+        {
+            $results['tasks'][ $task ] = dynbit_task_unavailable();
+            continue;
+        }
+
+        $results['tasks'][ $task ] = $task_function();
+    }
+
+    return $results;
 }
 
 /**
@@ -73,13 +88,13 @@ foreach ( glob( __DIR__.'/tasks/*.php' ) as $file )
  * On load.
  */
 
-block_direct_access();
+// block_direct_access();
 block_third_party_access();
 
 // connect to WordPress
 require_once preg_replace( '/wp-content.*$/', '', __DIR__ ).'wp-load.php';
 
-$data = perform_task();
+$data = perform_tasks();
 
 return_data( $data );
 

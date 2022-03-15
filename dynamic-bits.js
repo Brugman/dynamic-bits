@@ -1,23 +1,35 @@
 (function($) {
 
+    let dynbits = [];
+
     $('[data-dynbit]').each( function () {
+        let item = $(this).attr('data-dynbit');
+        if ( dynbits.indexOf( item ) === -1 ) {
+            dynbits.push( item );
+        }
+    });
 
-        let dynbit = $(this).attr('data-dynbit');
+    $.ajax({
+        dataType: 'json',
+        url: '/dynbit-api/',
+        data: { 'tasks': dynbits.join() },
+        success: function ( results ) {
 
-        $.ajax({
-            dataType: 'json',
-            url: '/dynbit-api/',
-            data: { 'task': dynbit },
-            success: function ( data ) {
+            if ( !results.success ) {
+                console.log( '[dynamic bits] api call failed: '+results.data );
+                return;
+            }
 
-                if ( !data.success ) {
-                    console.log( '[dynamic bits] '+dynbit+' task failed: '+data.data );
-                    return;
+            for ( let [ task_name, result ] of Object.entries( results.tasks ) ) {
+
+                if ( !result.success ) {
+                    console.log( '[dynamic bits] '+task_name+' task failed: '+result.data );
+                    continue;
                 }
 
-                $('[data-dynbit="'+dynbit+'"]').html( data.data );
+                $('[data-dynbit="'+task_name+'"]').html( result.data );
             }
-        });
+        }
     });
 
 })( jQuery );

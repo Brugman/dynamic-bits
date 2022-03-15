@@ -51,6 +51,8 @@ add_action( 'wp_footer', function () {
 <p>Dynamic Bits Examples</p>
 <p>This page was cached on <?=date('Y-m-d H:i:s');?>.</p>
 <p>The time is now <span data-dynbit="time"></span>.</p>
+<p>The time is now <span data-dynbit="time"></span>.</p>
+<p>The time is now <span data-dynbit="time"></span>.</p>
 <p>Today is <span data-dynbit="day"></span>.</p>
 <p>A random number is <span data-dynbit="random_number"></span>.</p>
 <p>The website admin email is <span data-dynbit="admin_email"></span>.</p>
