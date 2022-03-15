@@ -33,23 +33,19 @@ function return_data( $data )
     exit;
 }
 
+function clean_task_name( $string )
+{
+    return preg_replace( '/[^a-z0-9_]+/', '', $string );
+}
+
 function perform_task()
 {
-    switch ( $_GET['task'] ?? false )
-    {
-        case 'time':
-            return dynbit_time();
-            break;
-        case 'day':
-            return dynbit_day();
-            break;
-        case 'random-number':
-            return dynbit_random_number();
-            break;
-        default:
-            return dynbit_task_unavailable();
-            break;
-    }
+    $task_function = 'dynbit_'.clean_task_name( $_GET['task'] ?? '' );
+
+    if ( !function_exists( $task_function ) )
+        return dynbit_task_unavailable();
+
+    return $task_function();
 }
 
 block_direct_access();
