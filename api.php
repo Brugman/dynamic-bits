@@ -1,6 +1,15 @@
 <?php
 
-include 'api-tasks.php';
+/**
+ * Core functions.
+ */
+
+function return_data( $data )
+{
+    header( 'Content-Type: application/json; charset=UTF-8' );
+    echo json_encode( $data );
+    exit;
+}
 
 function block_direct_access()
 {
@@ -26,13 +35,6 @@ function block_third_party_access()
     }
 }
 
-function return_data( $data )
-{
-    header( 'Content-Type: application/json; charset=UTF-8' );
-    echo json_encode( $data );
-    exit;
-}
-
 function clean_task_name( $string )
 {
     return preg_replace( '/[^a-z0-9_]+/', '', $string );
@@ -47,6 +49,29 @@ function perform_task()
 
     return $task_function();
 }
+
+/**
+ * Core tasks.
+ */
+
+function dynbit_task_unavailable()
+{
+    return [
+        'success' => false,
+        'data'    => 'Task unavailable.',
+    ];
+}
+
+/**
+ * Include custom tasks.
+ */
+
+foreach ( glob( __DIR__.'/tasks/*.php' ) as $file )
+    include_once( $file );
+
+/**
+ * On load.
+ */
 
 block_direct_access();
 block_third_party_access();
