@@ -9,7 +9,13 @@
             url: '/dynbit-api/',
             data: { 'task': dynbit },
             success: function ( data ) {
-                $('[data-dynbit="'+dynbit+'"]').replaceWith( data );
+
+                if ( !data.success ) {
+                    console.log( '[dynamic bits] '+dynbit+' task failed: '+data.data );
+                    return;
+                }
+
+                $('[data-dynbit="'+dynbit+'"]').html( data.data );
             }
         });
     });
