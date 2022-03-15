@@ -76,6 +76,9 @@ foreach ( glob( __DIR__.'/tasks/*.php' ) as $file )
 block_direct_access();
 block_third_party_access();
 
+// connect to WordPress
+require_once preg_replace( '/wp-content.*$/', '', __DIR__ ).'wp-load.php';
+
 $data = perform_task();
 
 return_data( $data );

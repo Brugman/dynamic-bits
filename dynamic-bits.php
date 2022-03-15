@@ -53,6 +53,7 @@ add_action( 'wp_footer', function () {
 <p>The time is now <span data-dynbit="time"></span>.</p>
 <p>Today is <span data-dynbit="day"></span>.</p>
 <p>A random number is <span data-dynbit="random_number"></span>.</p>
+<p>The website admin email is <span data-dynbit="admin_email"></span>.</p>
 <p>This is a failing task<span data-dynbit="woop_dee_doo"></span>.</p>
 <?php
 });
