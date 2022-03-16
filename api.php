@@ -35,23 +35,42 @@ function block_third_party_access()
     }
 }
 
+function block_no_tasks( $tasks )
+{
+    if ( empty( $tasks ) )
+    {
+        return_data([
+            'success' => false,
+            'data'    => 'No tasks requested.',
+        ]);
+    }
+}
+
 function clean_task_name( $string )
 {
     return preg_replace( '/[^a-z0-9_]+/', '', $string );
 }
 
-function perform_tasks()
+function get_tasks()
+{
+    if ( empty( $_GET['tasks'] ) )
+        return [];
+
+    return array_unique( explode( ',', $_GET['tasks'] ?? '' ) );
+}
+
+function perform_tasks( $tasks = [] )
 {
     $results = [
         'success' => true,
         'data'    => 'Success.',
     ];
 
-    $tasks = array_unique( explode( ',', $_GET['tasks'] ?? '' ) );
-
     foreach ( $tasks as $task )
     {
-        $task_function = 'dynbit_'.clean_task_name( $task );
+        $task = clean_task_name( $task );
+
+        $task_function = 'dynbit_'.$task;
 
         if ( !function_exists( $task_function ) )
         {
@@ -94,7 +113,11 @@ block_third_party_access();
 // connect to WordPress
 require_once preg_replace( '/wp-content.*$/', '', __DIR__ ).'wp-load.php';
 
-$data = perform_tasks();
+$tasks = get_tasks();
+
+block_no_tasks( $tasks );
+
+$data = perform_tasks( $tasks );
 
 return_data( $data );
 
