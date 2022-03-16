@@ -1,8 +1,6 @@
-(function($) {
-// document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
 
-    console.log( 'page ready' );
-
+    // get dynamic bits
     let dynbits = [];
 
     document.querySelectorAll('[data-dynbit]').forEach( function ( el ) {
@@ -12,30 +10,35 @@
         }
     });
 
-    $.ajax({
-        dataType: 'json',
-        url: '/dynbit-api/',
-        data: { 'tasks': dynbits.join() },
-        success: function ( results ) {
+    // send dynamic bits to api
+    let request = new XMLHttpRequest();
 
-            if ( !results.success ) {
-                console.log( '[dynamic bits] api call failed: '+results.data );
-                return;
-            }
+    request.open( 'GET', '/dynbit-api/?tasks='+dynbits.join(), true );
 
-            for ( let [ task_name, result ] of Object.entries( results.tasks ) ) {
+    request.onload = function () {
+        if ( this.status < 200 || this.status >= 400 )
+            return;
 
-                if ( !result.success ) {
-                    console.log( '[dynamic bits] '+task_name+' task failed: '+result.data );
-                    continue;
-                }
+        let results = JSON.parse( this.response );
 
-                document.querySelectorAll('[data-dynbit="'+task_name+'"]').forEach( function ( el ) {
-                    el.innerHTML = result.data;
-                });
-            }
+        if ( !results.success ) {
+            console.log( '[dynamic bits] api call failed: '+results.data );
+            return;
         }
-    });
 
-// });
-})( jQuery );
+        for ( let [ task_name, result ] of Object.entries( results.tasks ) ) {
+
+            if ( !result.success ) {
+                console.log( '[dynamic bits] '+task_name+' task failed: '+result.data );
+                continue;
+            }
+
+            // place dynamic bits
+            document.querySelectorAll('[data-dynbit="'+task_name+'"]').forEach( function ( el ) {
+                el.innerHTML = result.data;
+            });
+        }
+    };
+
+    request.send();
+});

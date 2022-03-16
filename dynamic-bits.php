@@ -23,7 +23,7 @@ add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_script(
         'dynamic-bits', // name
         plugin_dir_url( __FILE__ ).'dynamic-bits.js', // url
-        ['jquery'], // deps
+        [], // deps
         '0.1.0', // ver
         true // in_footer
     );
