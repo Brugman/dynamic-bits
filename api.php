@@ -88,7 +88,7 @@ foreach ( glob( __DIR__.'/tasks/*.php' ) as $file )
  * On load.
  */
 
-// block_direct_access();
+block_direct_access();
 block_third_party_access();
 
 // connect to WordPress
