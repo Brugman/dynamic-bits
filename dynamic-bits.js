@@ -10,24 +10,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // send dynamic bits to api
-    let request = new XMLHttpRequest();
+    // post to our api
+    jQuery.post( FAO.ajaxurl, {
+        action: 'dynbits',
+        nonce: FAO.nonce,
+        tasks: dynbits,
+    }).fail( function ( response ) {
+        // console.log( '---' );
+        // console.log( 'dynbits fail' );
+        // console.log( response.responseJSON.data );
+    }).done( function ( response ) {
+        // console.log( '---' );
+        // console.log( 'dynbits done' );
+        // loop over tasks
+        for ( let [ task_name, result ] of Object.entries( response.data.tasks ) ) {
+            // console.log( task_name );
+            // console.log( result.success );
+            // console.log( result.data );
 
-    request.open( 'GET', '/dynbit-api/?tasks='+dynbits.join(), true );
-
-    request.onload = function () {
-        if ( this.status < 200 || this.status >= 400 )
-            return;
-
-        let results = JSON.parse( this.response );
-
-        if ( !results.success ) {
-            console.log( '[dynamic bits] api call failed: '+results.data );
-            return;
-        }
-
-        for ( let [ task_name, result ] of Object.entries( results.tasks ) ) {
-
+            // failed task
             if ( !result.success ) {
                 console.log( '[dynamic bits] '+task_name+' task failed: '+result.data );
                 continue;
@@ -38,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 el.innerHTML = result.data;
             });
         }
-    };
-
-    request.send();
+    });
 });
+
